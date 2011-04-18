@@ -1,7 +1,7 @@
 (function($) {
 
 $.fn.camelCase = function(options) {
-	alert(options.content);
+	console.log('The camelCase plugin was called');
 }
 
 })(jQuery);

@@ -29,14 +29,10 @@ var methods = {
 			for (var i = 0; i < attrs.length; i++) {
 				var attrName = attrs[i].nodeName;
 				var parsed = attrs[i].nodeName.replace(/data-/, '');
-				var split = parsed.split('-');
-				if (split.length > 1) {
+				if (parsed != camelCase(parsed)) {
 					var data = self.data(parsed);
 					self.removeData(parsed);
-					parsed = split[0];
-					for (var i = 1; i < split.length; i++) {
-						parsed = parsed + split[i].charAt(0).toUpperCase() + split[i].slice(1);
-					}
+					parsed = camelCase(parsed);
 					self.data(parsed, data);
 				}
 				if (!attrName.match(/data-(.)/) || plugins.indexOf(parsed) === -1) {
@@ -53,6 +49,28 @@ var methods = {
 		});
 	}
 };
+function camelCase(str) {
+	var split = str.split('-');
+	var ret = '';
+	if (split.length > 1) {
+		ret = split[0];
+		for (var i = 1; i < split.length; i++) {
+			ret = ret + split[i].charAt(0).toUpperCase() + split[i].slice(1);
+		}
+	}
+	return ret;
+}
+function hyphenate(str) {
+	var ret = '';
+	for (var i = 0; i < str.length; i++) {
+		if (str.charAt(i) == str.charAt(i).toUpperCase()) {
+			ret = ret + '-' + str.charAt(i).toLowerCase();
+		} else {
+			ret = ret + str.charAt(i);
+		}
+	}
+	return ret;
+}
 $.fn.pluginLoader = function(plugins, options) {
 	if (typeof plugins === 'string') {
 		plugins = plugins.split(',').map(function(el) { return el.trim(); });
@@ -60,7 +78,8 @@ $.fn.pluginLoader = function(plugins, options) {
 		plugins = plugins.map(function(el) { return el.trim(); });
 	}
 	loader = $.extend(loader, options);
-	var find = plugins.map(function(el) { return '[data-'+el+']'; }).join(', ');
+	var find = plugins.map(function(el) { return '[data-'+hyphenate(el)+']'; }).join(', ');
+	console.log('Method call: methods.init($(\''+find+'\', this), plugins);');
 	methods.init($(find, this), plugins);
 	return this;
 }

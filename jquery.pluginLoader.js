@@ -57,6 +57,8 @@ function camelCase(str) {
 		for (var i = 1; i < split.length; i++) {
 			ret = ret + split[i].charAt(0).toUpperCase() + split[i].slice(1);
 		}
+	} else {
+		ret = str;
 	}
 	return ret;
 }

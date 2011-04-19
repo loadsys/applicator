@@ -128,9 +128,16 @@ function check(key, plugins) {
 }
 
 /**
+ * Adding the pluginLoader the the jQuery.fn. The plugin takes
+ * an array or comma separated string of plugins to be searched for
+ * and applied to elements. The plugins array should be spelled
+ * exactly as the plugin is named. This method will convert the
+ * array to a jQuery selector, containing both hyphenated and 
+ * single string toLowerCase versions of the plugins.
  *
- *
- *
+ * @param mixed plugins
+ * @param object options
+ * @return this
  */
 $.fn.pluginLoader = function(plugins, options) {
 	if (typeof plugins === 'string') {
@@ -139,8 +146,9 @@ $.fn.pluginLoader = function(plugins, options) {
 		plugins = plugins.map(function(el) { return el.trim(); });
 	}
 	loader = $.extend(loader, options);
-	var find = plugins.map(function(el) { return '[data-'+hyphenate(el)+'], [data-'+camelCase(el).toLowerCase()+']'; }).join(', ');
-	console.log('Method call: methods.init($(\''+find+'\', this), plugins);');
+	var find = plugins.map(function(el) {
+		return '[data-'+hyphenate(el)+'], [data-'+camelCase(el).toLowerCase()+']';
+	}).join(', ');
 	methods.init($(find, this), plugins);
 	return this;
 }

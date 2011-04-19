@@ -41,7 +41,6 @@ var methods = {
 					self.data(plugin, data);
 				}
 				// Check if a callback for the plugin has been created
-				alert(plugin);
 				if (loader[plugin]) {
 					loader[plugin](self, self.data(plugin));
 				} else {
@@ -128,6 +127,11 @@ function check(key, plugins) {
 	return false;
 }
 
+/**
+ *
+ *
+ *
+ */
 $.fn.pluginLoader = function(plugins, options) {
 	if (typeof plugins === 'string') {
 		plugins = plugins.split(',').map(function(el) { return el.trim(); });

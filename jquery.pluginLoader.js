@@ -28,22 +28,32 @@ var methods = {
 			var attrs = self[0].attributes;
 			for (var i = 0; i < attrs.length; i++) {
 				var attrName = attrs[i].nodeName;
-				var parsed = attrs[i].nodeName.replace(/data-/, '');
+				
+				// Continue to next attr if it isn't a data- attr
+				if (!attrName.match(/data-(.)*/)) {
+					continue;
+				}
+				
+				var parsed = attrName.replace(/data-/, '');
 				if (parsed != camelCase(parsed)) {
 					var data = self.data(parsed);
 					self.removeData(parsed);
 					parsed = camelCase(parsed);
 					self.data(parsed, data);
 				}
-				if (parsed.toLowerCase() )
-				if (!attrName.match(/data-(.)/) || plugins.indexOf(parsed) === -1) {
+				var key = plugins[parsed];
+				if (plugins.indexOf(parsed.toLowerCase()) != -1) {
+					key = plugins[plugins.indexOf(parsed.toLowerCase())];
+				}
+				if (plugins.indexOf(parsed) === -1) {
 					continue;
 				}
-				if (loader[parsed]) {
-					loader[parsed](self, self.data(parsed));
+				var plugin = plugins[plugins.indexOf(key)]
+				if (loader[plugin]) {
+					loader[plugin](self, self.data(parsed));
 				} else {
-					if (self[parsed]) {
-						self[parsed](self.data(parsed));
+					if (self[plugin]) {
+						self[plugin](self.data(parsed));
 					}
 				}
 			}

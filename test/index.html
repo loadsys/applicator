@@ -2,8 +2,8 @@
 <html>
 	<head>
 		<title>jQuery Selector Test</title>
-		<script src="jquery.min.js" type="text/javascript"></script>
-		<script src="jquery.pluginLoader.js" type="text/javascript"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js" type="text/javascript"></script>
+		<script src="../jquery.pluginLoader.js" type="text/javascript"></script>
 		<script src="params.js" type="text/javascript"></script>
 		<script src="content.js" type="text/javascript"></script>
 		<script src="camelCase.js" type="text/javascript"></script>
@@ -11,7 +11,7 @@
 		<script src="scripts.js" type="text/javascript"></script>
 	</head>
 	<body>
-		<div class="required" data-content='{"content":"This is content from the html tag"}' data-name="joey" data-params='{"content":"This is the content that will fill the tag"}'></div>
+		<div class="required" data-content='{"content":"This is content from the html tag"}' data-name="Data that isn't affected by the plugin" data-params='{"content":"This is the content that will fill the tag"}'></div>
 		<div id="container" data-params='{"content":"This is the content that will fill the tag"}'></div>
 		<div data-camel-case='{"content": "this is camelCase content"}'></div>
 		<div data-casecamel='{"content": "this is a non hypenated camelCase attribute"}'></div>

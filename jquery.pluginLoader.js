@@ -35,6 +35,7 @@ var methods = {
 					parsed = camelCase(parsed);
 					self.data(parsed, data);
 				}
+				if (parsed.toLowerCase() )
 				if (!attrName.match(/data-(.)/) || plugins.indexOf(parsed) === -1) {
 					continue;
 				}
@@ -49,6 +50,14 @@ var methods = {
 		});
 	}
 };
+
+/**
+ * Takes a string and converts hyphenated words to camel
+ * case version. Returns the camel case if hyphens exist
+ * and returns the passed in string if not.
+ *
+ * @param string str
+ */
 function camelCase(str) {
 	var split = str.split('-');
 	var ret = '';
@@ -62,6 +71,13 @@ function camelCase(str) {
 	}
 	return ret;
 }
+
+/**
+ * Takes a string and converts a camelCase string to a
+ * hyphenated version. Returns the hyphenated string
+ *
+ * @param string str
+ */
 function hyphenate(str) {
 	var ret = '';
 	for (var i = 0; i < str.length; i++) {
@@ -73,6 +89,8 @@ function hyphenate(str) {
 	}
 	return ret;
 }
+
+
 $.fn.pluginLoader = function(plugins, options) {
 	if (typeof plugins === 'string') {
 		plugins = plugins.split(',').map(function(el) { return el.trim(); });
@@ -80,7 +98,7 @@ $.fn.pluginLoader = function(plugins, options) {
 		plugins = plugins.map(function(el) { return el.trim(); });
 	}
 	loader = $.extend(loader, options);
-	var find = plugins.map(function(el) { return '[data-'+hyphenate(el)+']'; }).join(', ');
+	var find = plugins.map(function(el) { return '[data-'+hyphenate(el)+'], [data-'+el.toLowerCase()+']'; }).join(', ');
 	console.log('Method call: methods.init($(\''+find+'\', this), plugins);');
 	methods.init($(find, this), plugins);
 	return this;

@@ -20,39 +20,6 @@
  *
  */
 (function($) {
-var loader = {};
-var methods = {
-	init: function($this, plugins) {
-		return $this.each(function(index) {
-			var self = $(this);
-			var attrs = self[0].attributes;
-			for (var i = 0; i < attrs.length; i++) {
-				var attrName = attrs[i].nodeName;
-				var dataKey = attrName.replace(/data-/, '');
-				var plugin = check(dataKey, plugins);
-				// Call continue early if attr isn't a data- attr
-				if (!attrName.match(/data-(.)*/) || !plugin) {
-					continue;
-				}
-				// Strip data- off of the attrName
-				if (dataKey !== plugin) {
-					var data = self.data(dataKey);
-					self.removeData(dataKey);
-					self.data(plugin, data);
-				}
-				// Check if a callback for the plugin has been created
-				if (loader[plugin]) {
-					loader[plugin](self, self.data(plugin));
-				} else {
-					// Check if the plugin exists
-					if (self[plugin]) {
-						self[plugin](self.data(plugin));
-					}
-				}
-			}
-		});
-	}
-};
 
 /**
  * Takes a string and converts hyphenated words to camel
@@ -128,6 +95,46 @@ function check(key, plugins) {
 }
 
 /**
+ * Hash of callback methods keyed by the plugin name that the method
+ * belongs to.
+ *
+ * @var object
+ */
+var loader = {};
+var methods = {
+	init: function($this, plugins) {
+		return $this.each(function(index) {
+			var self = $(this);
+			var attrs = self[0].attributes;
+			for (var i = 0; i < attrs.length; i++) {
+				var attrName = attrs[i].nodeName;
+				var dataKey = attrName.replace(/data-/, '');
+				var plugin = check(dataKey, plugins);
+				// Call continue early if attr isn't a data- attr
+				if (!attrName.match(/data-(.)*/) || !plugin) {
+					continue;
+				}
+				// Strip data- off of the attrName
+				if (dataKey !== plugin) {
+					var data = self.data(dataKey);
+					self.removeData(dataKey);
+					self.data(plugin, data);
+				}
+				// Check if a callback for the plugin has been created
+				if (loader[plugin]) {
+					loader[plugin](self, self.data(plugin));
+				} else {
+					// Check if the plugin exists
+					if (self[plugin]) {
+						self[plugin](self.data(plugin));
+					}
+				}
+			}
+		});
+	}
+};
+
+/**
  * Adding the pluginLoader the the jQuery.fn. The plugin takes
  * an array or comma separated string of plugins to be searched for
  * and applied to elements. The plugins array should be spelled
@@ -152,4 +159,5 @@ $.fn.pluginLoader = function(plugins, options) {
 	methods.init($(find, this), plugins);
 	return this;
 }
+
 })(jQuery);

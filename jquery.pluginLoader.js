@@ -28,32 +28,26 @@ var methods = {
 			var attrs = self[0].attributes;
 			for (var i = 0; i < attrs.length; i++) {
 				var attrName = attrs[i].nodeName;
-				
-				// Continue to next attr if it isn't a data- attr
-				if (!attrName.match(/data-(.)*/)) {
+				var dataKey = attrName.replace(/data-/, '');
+				var plugin = check(dataKey, plugins);
+				// Call continue early if attr isn't a data- attr
+				if (!attrName.match(/data-(.)*/) || !plugin) {
 					continue;
 				}
-				
-				var parsed = attrName.replace(/data-/, '');
-				if (parsed != camelCase(parsed)) {
-					var data = self.data(parsed);
-					self.removeData(parsed);
-					parsed = camelCase(parsed);
-					self.data(parsed, data);
+				// Strip data- off of the attrName
+				if (dataKey !== plugin) {
+					var data = self.data(dataKey);
+					self.removeData(dataKey);
+					self.data(plugin, data);
 				}
-				var key = plugins[parsed];
-				if (plugins.indexOf(parsed.toLowerCase()) != -1) {
-					key = plugins[plugins.indexOf(parsed.toLowerCase())];
-				}
-				if (plugins.indexOf(parsed) === -1) {
-					continue;
-				}
-				var plugin = plugins[plugins.indexOf(key)]
+				// Check if a callback for the plugin has been created
+				alert(plugin);
 				if (loader[plugin]) {
-					loader[plugin](self, self.data(parsed));
+					loader[plugin](self, self.data(plugin));
 				} else {
+					// Check if the plugin exists
 					if (self[plugin]) {
-						self[plugin](self.data(parsed));
+						self[plugin](self.data(plugin));
 					}
 				}
 			}
@@ -100,6 +94,39 @@ function hyphenate(str) {
 	return ret;
 }
 
+/**
+ * Takes the attribute minus the data- and the array
+ * of plugins. Will convert the key to different versions
+ * to find which version exists in the plugins array.
+ * Returns the version that is stored in the array.
+ *
+ * @param string key
+ * @param array plugins
+ */
+function check(key, plugins) {
+	var hyphen = hyphenate(key);
+	var camel = camelCase(key);
+	var lower = camelCase(key);
+	lower.toLowerCase();
+	if (plugins[plugins.indexOf(key)]) {
+		return plugins[plugins.indexOf(key)];
+	}
+	if (plugins[plugins.indexOf(hyphen)]) {
+		return plugins[plugins.indexOf(hyphen)];
+	}
+	if (plugins[plugins.indexOf(camel)]) {
+		return plugins[plugins.indexOf(camel)];
+	}
+	if (plugins[plugins.indexOf(lower)]) {
+		return plugins[plugins.indexOf(lower)];
+	}
+	for (var i = 0; i < plugins.length; i++) {
+		if (plugins[i].toLowerCase() == lower) {
+			return plugins[i];
+		}
+	}
+	return false;
+}
 
 $.fn.pluginLoader = function(plugins, options) {
 	if (typeof plugins === 'string') {
@@ -108,7 +135,7 @@ $.fn.pluginLoader = function(plugins, options) {
 		plugins = plugins.map(function(el) { return el.trim(); });
 	}
 	loader = $.extend(loader, options);
-	var find = plugins.map(function(el) { return '[data-'+hyphenate(el)+'], [data-'+el.toLowerCase()+']'; }).join(', ');
+	var find = plugins.map(function(el) { return '[data-'+hyphenate(el)+'], [data-'+camelCase(el).toLowerCase()+']'; }).join(', ');
 	console.log('Method call: methods.init($(\''+find+'\', this), plugins);');
 	methods.init($(find, this), plugins);
 	return this;

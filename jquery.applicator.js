@@ -114,13 +114,8 @@ var methods = {
 				if (!attrName.match(/data-(.)*/) || !plugin) {
 					continue;
 				}
-				// Strip data- off of the attrName
-				if (dataKey !== plugin) {
-					var data = self.data(dataKey);
-					self.removeData(dataKey);
-					self.data(plugin, data);
-				}
-				var data = self.data(plugin) || {};
+				// Get data from attribute or set it to empty object
+				var data = $.parseJSON(self.attr(attrName)) || {};
 				// Check if a callback for the plugin has been created
 				if (loader[plugin]) {
 					loader[plugin](self, data);

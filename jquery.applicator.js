@@ -120,13 +120,14 @@ var methods = {
 					self.removeData(dataKey);
 					self.data(plugin, data);
 				}
+				var data = self.data(plugin) || {};
 				// Check if a callback for the plugin has been created
 				if (loader[plugin]) {
-					loader[plugin](self, self.data(plugin));
+					loader[plugin](self, data);
 				} else {
 					// Check if the plugin exists
 					if (self[plugin]) {
-						self[plugin](self.data(plugin));
+						self[plugin](data);
 					}
 				}
 			}

@@ -146,7 +146,7 @@ var methods = {
  * @param object options
  * @return this
  */
-$.fn.pluginLoader = function(plugins, options) {
+$.fn.applicator = function(plugins, options) {
 	if (typeof plugins === 'string') {
 		plugins = plugins.split(',').map(function(el) { return el.trim(); });
 	} else if (plugins instanceof Array) {

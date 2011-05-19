@@ -146,10 +146,10 @@ $.fn.applicator = function(plugins, options) {
 	if (typeof plugins === 'string') {
 		plugins = plugins.split(',').map(function(el) { return el.trim(); });
 	} else if (plugins instanceof Array) {
-		plugins = plugins.map(function(el) { return el.trim(); });
+		plugins = $.map(plugins, function(el) { return $.trim(el); });
 	}
 	loader = $.extend(loader, options);
-	var find = plugins.map(function(el) {
+	var find = $.map(plugins, function(el) {
 		return '[data-'+hyphenate(el)+'], [data-'+camelCase(el).toLowerCase()+']';
 	}).join(', ');
 	methods.init($(find, this), plugins);

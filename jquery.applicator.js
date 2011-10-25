@@ -152,6 +152,12 @@ $.fn.applicator = function(plugins, options) {
 	var find = $.map(plugins, function(el) {
 		return '[data-'+hyphenate(el)+'], [data-'+camelCase(el).toLowerCase()+']';
 	}).join(', ');
+	// So that this doesn't get reassigned multiple times, check if it doesn't
+	// exist first.
+	// TODO build methods for adding/removing plugins and handlers at runtime
+	if (!document['applicator']) {
+		document['applicator'] = {"plugins":plugins, "handlers":loader};
+	}
 	methods.init($(find, this), plugins);
 	return this;
 }

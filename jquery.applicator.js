@@ -115,7 +115,11 @@ var methods = {
 					continue;
 				}
 				// Get data from attribute or set it to empty object
-				var data = $.parseJSON(self.attr(attrName)) || {};
+				if (self.attr(attrName).search(/^\{(.*)\}$/) != -1) {
+					var data = $.parseJSON(self.attr(attrName)) || {};
+				} else {
+					var data = self.attr(attrName) || {};
+				}
 				// Check if a callback for the plugin has been created
 				if (loader[plugin]) {
 					loader[plugin](self, data);

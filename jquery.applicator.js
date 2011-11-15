@@ -21,6 +21,9 @@
  */
 (function($) {
 
+// Polyfill for indexOf for IE.
+Array.prototype.indexOf=[].indexOf||function(a,b,c,r){for(b=this,c=b.length,r=-1;~c;r=b[--c]===a?c:r);return r}
+
 /**
  * Takes a string and converts hyphenated words to camel
  * case version. Returns the camel case if hyphens exist

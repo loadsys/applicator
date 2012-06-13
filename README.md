@@ -1,4 +1,4 @@
-h1. jQuery pluginLoader Plugin
+# jQuery Applicator Plugin
 
 Redundant; yes. Awesome; totally!
 

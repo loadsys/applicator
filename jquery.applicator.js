@@ -10,12 +10,22 @@
 // plugin instantiation on a per plugin basis but still globally for all tags.
 //
 // Example: 
-// $(document).pluginLoader('plugin1, plugin2', {
-//		 'plugin1': function(el, opt) {
-//				 el.plugin1(opt);
-//				 el.differentPluginInitialization();
+// $(document).applicator(['plugin1, plugin2'], {
+//		 'plugin1': function($el, opt) {
+//				 $el.plugin1(opt);
+//				 $el.differentPluginInitialization();
 //		 }
 // });
+//
+// Also can just use this as a way to apply plugins to elements without any
+// of the extra boiler plate you'd normally have.
+//
+// $(document).applicator(["button"]);
+//
+// <a data-button href="#">This will be a button</a>
+//
+// Any markup that has data-button attribute will get $.fn.button method called
+// on it (assuming it is available).
 //
 (function ($) {
 
@@ -147,12 +157,15 @@
 			return '[data-' + hyphenate(el) + '], [data-' + camelCase(el).toLowerCase() + ']';
 		}).join(', ');
 		// So that this doesn't get reassigned multiple times, check if it doesn't
-		// exist first.
+		// exist first. Use this to call applicator on ajax loaded content.
+		//
+		// $(ajaxMarkup).applicator(document.applicator);
+		//
 		// TODO build methods for adding/removing plugins and handlers at runtime
 		if (!document.applicator) {
 			document.applicator = {plugins:plugins, handlers:loader};
 		}
-		methods.init($(find, this), plugins);
+		methods.init(this.find(find), plugins);
 		return this;
 	}
 

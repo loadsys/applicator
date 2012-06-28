@@ -35,7 +35,7 @@ This will analyze the plugins and create a selector (scoped to the element that 
 ```html
 <a href="#" data-button='{"icons: {"primary": "ui-icon-locked"}}'>Button</a>
 <input type="date" data-datepicker>
-<div data-custom='{"custom": "Custom handler called"}'>...</div>
+<div data-custom='{"content": "Custom handler called"}'>...</div>
 ```
 
 Now the plugins will be applied without the need to write all the selectors manually. This encourages you write code as jQuery plugins which makes for more testable and reusable javascript.

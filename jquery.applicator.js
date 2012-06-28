@@ -2,14 +2,14 @@
 // of plugins to load. The tags that these plugins should apply to will be
 // found by whether or not they have a data-{pluginName} attribute. Passing
 // a object in the data-{pluginName} attribute will translate to the options
-// for the plugin. 
+// for the plugin.
 //
 // In the initial call, the second parameter can be a hash of plugin names for
 // keys and functions for their values. Those function will be called instead
 // of the plugin name on the selected element. This allows you to customize the
 // plugin instantiation on a per plugin basis but still globally for all tags.
 //
-// Example: 
+// Example:
 // $(document).applicator(['plugin1, plugin2'], {
 //		 'plugin1': function($el, opt) {
 //				 $el.plugin1(opt);
@@ -29,7 +29,7 @@
 //
 (function ($) {
 
-	var loader, methods, camelCase, hyphenate, check;
+	var loader, methods, camelCase, hyphenate, check, cachedPlugins;
 
 	// Hash of callback methods keyed by the plugin name that the method
 	// belongs to.
@@ -72,7 +72,7 @@
 	// Takes the attribute minus the data- and the array
 	// of plugins. Will convert the key to different versions
 	// to find which version exists in the plugins array.
-	// Returns the version that is stored in the array. 
+	// Returns the version that is stored in the array.
 	check = function (key, plugins) {
 		var hyphen = hyphenate(key)
 			, camel = camelCase(key)
@@ -139,7 +139,7 @@
 	// an array or comma separated string of plugins to be searched for
 	// and applied to elements. The plugins array should be spelled
 	// exactly as the plugin is named. This method will convert the
-	// array to a jQuery selector, containing both hyphenated and 
+	// array to a jQuery selector, containing both hyphenated and
 	// single string toLowerCase versions of the plugins.
 	//
 	// @param mixed plugins
@@ -147,24 +147,27 @@
 	// @return this
 	$.fn.applicator = function (plugins, options) {
 		var find;
-		if (typeof plugins === 'string') {
-			plugins = plugins.split(',').map(function (el) { return el.trim(); });
-		} else if (plugins instanceof Array) {
-			plugins = $.map(plugins, function (el) { return $.trim(el); });
+		if (!plugins && !cachedPlugins) {
+			return this;
+		} else if (!plugins && cachedPlugins) {
+			plugins = cachedPlugins;
+		} else {
+			if (typeof plugins === 'string') {
+				plugins = plugins.split(',').map(function (el) { return el.trim(); });
+			} else if (plugins instanceof Array) {
+				plugins = $.map(plugins, function (el) { return $.trim(el); });
+			}
 		}
 		loader = $.extend(loader, options);
+		// Cache the plugins
+		if (!cachedPlugins) {
+			cachedPlugins = plugins;
+		}
 		find = $.map(plugins, function (el) {
 			return '[data-' + hyphenate(el) + '], [data-' + camelCase(el).toLowerCase() + ']';
 		}).join(', ');
 		// So that this doesn't get reassigned multiple times, check if it doesn't
 		// exist first. Use this to call applicator on ajax loaded content.
-		//
-		// $(ajaxMarkup).applicator(document.applicator);
-		//
-		// TODO build methods for adding/removing plugins and handlers at runtime
-		if (!document.applicator) {
-			document.applicator = {plugins:plugins, handlers:loader};
-		}
 		methods.init(this.find(find), plugins);
 		return this;
 	}
